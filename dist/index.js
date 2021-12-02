@@ -1115,11 +1115,13 @@ const GoogleChat = __importStar(__webpack_require__(320));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const name = core.getInput('name', { required: true });
-            const url = core.getInput('url', { required: true });
+            const title = core.getInput('title', { required: true });
+            const subtitle = core.getInput('subtitle', { required: false });
+            const webhookUrl = core.getInput('url', { required: true });
             const status = JobStatus.parse(core.getInput('status', { required: true }));
-            core.debug(`input params: name=${name}, status=${status}, url=${url}`);
-            yield GoogleChat.notify(name, url, status);
+            const threadKey = core.getInput('threadKey', { required: false });
+            core.debug(`input params: title=${title}, subtitle=${subtitle}, status=${status}, webhookUrl=${webhookUrl}, threadKey=${threadKey}`);
+            yield GoogleChat.notify({ title, subtitle, webhookUrl, status, threadKey });
             console.info('Sent message.');
         }
         catch (error) {
@@ -2570,22 +2572,22 @@ exports.notify = void 0;
 const github = __importStar(__webpack_require__(469));
 const axios = __importStar(__webpack_require__(53));
 const statusColorPalette = {
-    success: "#2cbe4e",
-    cancelled: "#ffc107",
-    failure: "#ff0000"
+    success: '#2cbe4e',
+    cancelled: '#ffc107',
+    failure: '#ff0000',
 };
 const statusText = {
-    success: "Succeeded",
-    cancelled: "Cancelled",
-    failure: "Failed"
+    success: 'Succeeded',
+    cancelled: 'Cancelled',
+    failure: 'Failed',
 };
 const textButton = (text, url) => ({
     textButton: {
         text,
-        onClick: { openLink: { url } }
-    }
+        onClick: { openLink: { url } },
+    },
 });
-function notify(name, url, status) {
+function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
     return __awaiter(this, void 0, void 0, function* () {
         const { owner, repo } = github.context.repo;
         const { eventName, sha, ref } = github.context;
@@ -2594,47 +2596,55 @@ function notify(name, url, status) {
         const eventPath = eventName === 'pull_request' ? `/pull/${number}` : `/commit/${sha}`;
         const eventUrl = `${repoUrl}${eventPath}`;
         const checksUrl = `${repoUrl}${eventPath}/checks`;
+        const skRegex = /spaces\/(.*)\//g.exec(webhookUrl);
+        const spacesKey = skRegex ? skRegex[1] : undefined;
         const body = {
-            cards: [{
+            cards: [
+                {
+                    header: {
+                        title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
+                        subtitle: subtitle,
+                    },
                     sections: [
-                        {
-                            widgets: [{
-                                    textParagraph: {
-                                        text: `<b>${name} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`
-                                    }
-                                }]
-                        },
                         {
                             widgets: [
                                 {
                                     keyValue: {
-                                        topLabel: "repository",
+                                        topLabel: 'repository',
                                         content: `${owner}/${repo}`,
                                         contentMultiline: true,
-                                        button: textButton("OPEN REPOSITORY", repoUrl)
-                                    }
+                                        button: textButton('OPEN REPOSITORY', repoUrl),
+                                    },
                                 },
                                 {
                                     keyValue: {
-                                        topLabel: "event name",
+                                        topLabel: 'event name',
                                         content: eventName,
-                                        button: textButton("OPEN EVENT", eventUrl)
-                                    }
+                                        button: textButton('OPEN EVENT', eventUrl),
+                                    },
                                 },
                                 {
-                                    keyValue: { topLabel: "ref", content: ref }
-                                }
-                            ]
+                                    keyValue: { topLabel: 'ref', content: ref },
+                                },
+                            ],
                         },
                         {
-                            widgets: [{
-                                    buttons: [textButton("OPEN CHECKS", checksUrl)]
-                                }]
-                        }
-                    ]
-                }]
+                            widgets: [
+                                {
+                                    buttons: [textButton('OPEN CHECKS', checksUrl)],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
         };
-        const response = yield axios.default.post(url, body);
+        if (threadKey && spacesKey) {
+            body.thread = {
+                name: `spaces/${spacesKey}/threads/${threadKey}`,
+            };
+        }
+        const response = yield axios.default.post(webhookUrl, body);
         if (response.status !== 200) {
             throw new Error(`Google Chat notification failed. response status=${response.status}`);
         }
@@ -2834,9 +2844,9 @@ exports.parse = void 0;
 function parse(status) {
     const s = status.toLowerCase();
     switch (s) {
-        case "success":
-        case "failure":
-        case "cancelled":
+        case 'success':
+        case 'failure':
+        case 'cancelled':
             return s;
         default:
             throw Error(`Invalid parameter. status=${status}.`);
