@@ -4,13 +4,15 @@ import * as GoogleChat from './chat'
 
 async function run() {
   try {
-    const name = core.getInput('name', { required: true })
-    const url = core.getInput('url', { required: true })
+    const title = core.getInput('title', { required: true })
+    const subtitle = core.getInput('subtitle', { required: false })
+    const webhookUrl = core.getInput('url', { required: true })
     const status = JobStatus.parse(core.getInput('status', { required: true }))
+    const threadKey = core.getInput('threadKey', { required: false })
 
-    core.debug(`input params: name=${name}, status=${status}, url=${url}`)
+    core.debug(`input params: title=${title}, subtitle=${subtitle}, status=${status}, webhookUrl=${webhookUrl}, threadKey=${threadKey}`)
 
-    await GoogleChat.notify(name, url, status)
+    await GoogleChat.notify({ title, subtitle, webhookUrl, status, threadKey })
     console.info('Sent message.')
   } catch (error: any) {
     core.setFailed(error.message)
