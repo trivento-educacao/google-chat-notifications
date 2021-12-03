@@ -29,10 +29,10 @@ export async function notify({
   threadKey,
 }: {
   title: string
-  subtitle: string
+  subtitle?: string
   webhookUrl: string
   status: Status
-  threadKey: string
+  threadKey?: string
 }) {
   const { owner, repo } = github.context.repo
   const { eventName, sha, ref } = github.context
@@ -49,7 +49,7 @@ export async function notify({
       {
         header: {
           title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-          subtitle: subtitle,
+          subtitle: subtitle?.replace(/(\r\n|\n|\r)/gm, ' '),
         },
         sections: [
           {

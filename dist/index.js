@@ -1117,7 +1117,7 @@ function run() {
         try {
             const title = core.getInput('title', { required: true });
             const subtitle = core.getInput('subtitle', { required: false });
-            const webhookUrl = core.getInput('url', { required: true });
+            const webhookUrl = core.getInput('webhookUrl', { required: true });
             const status = JobStatus.parse(core.getInput('status', { required: true }));
             const threadKey = core.getInput('threadKey', { required: false });
             core.debug(`input params: title=${title}, subtitle=${subtitle}, status=${status}, webhookUrl=${webhookUrl}, threadKey=${threadKey}`);
@@ -2603,7 +2603,7 @@ function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
                 {
                     header: {
                         title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-                        subtitle: subtitle,
+                        subtitle: subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' '),
                     },
                     sections: [
                         {
