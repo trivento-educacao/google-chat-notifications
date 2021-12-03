@@ -2603,7 +2603,7 @@ function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
                 {
                     header: {
                         title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-                        subtitle: subtitle,
+                        subtitle: subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' '),
                     },
                     sections: [
                         {
