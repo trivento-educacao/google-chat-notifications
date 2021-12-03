@@ -3,23 +3,23 @@ description: 'Google Chat Notifications for GitHub Actions'
 author: 'nakamuraos'
 inputs:
   title:
-    description: 'job title.'
+    description: 'Job title.'
     required: true
   subtitle:
-    description: 'job subtitle.'
+    description: 'Job subtitle.'
     required: false
   webhookUrl:
-    description: 'google chat webhook url.'
+    description: 'Google chat Webhook URL.'
     required: true
   status:
-    description: 'job status.'
+    description: 'Job status.'
     required: true
   threadKey:
-    description: 'thread key.'
+    description: 'Thread key.'
     required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
 branding:
-  icon: 'bell'
-  color: 'green'
+  icon: 'send'
+  color: 'blue'
