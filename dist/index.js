@@ -2592,7 +2592,11 @@ const textButton = (text, url) => ({
         onClick: { openLink: { url } },
     },
 });
+const htmlEntities = (str) => {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+};
 function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const { owner, repo } = github.context.repo;
         const { eventName, sha, ref } = github.context;
@@ -2606,6 +2610,12 @@ function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
         const body = {
             cards: [
                 {
+                    header: {
+                        title,
+                        subtitle: htmlEntities((_a = subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' ')) !== null && _a !== void 0 ? _a : ''),
+                        imageUrl: statusIcon[status],
+                        imageStyle: 'IMAGE',
+                    },
                     sections: [
                         {
                             widgets: [
@@ -2616,9 +2626,8 @@ function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
                                 },
                                 {
                                     keyValue: {
-                                        content: title,
-                                        bottomLabel: subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' '),
-                                        iconUrl: statusIcon[status],
+                                        content: htmlEntities((_b = subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' ')) !== null && _b !== void 0 ? _b : ''),
+                                        contentMultiline: true,
                                     },
                                 },
                             ],

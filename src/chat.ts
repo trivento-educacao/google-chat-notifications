@@ -16,7 +16,8 @@ const statusText: { [key in Status]: string } = {
 
 const statusIcon: { [key in Status]: string } = {
   success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/success.png',
-  cancelled: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/cancelled.png',
+  cancelled:
+    'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/cancelled.png',
   failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/failure.png',
 }
 
@@ -26,6 +27,10 @@ const textButton = (text: string, url: string) => ({
     onClick: { openLink: { url } },
   },
 })
+
+const htmlEntities = (str: string) => {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
 
 export async function notify({
   title,
@@ -53,6 +58,12 @@ export async function notify({
   const body: any = {
     cards: [
       {
+        header: {
+          title,
+          subtitle: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
+          imageUrl: statusIcon[status],
+          imageStyle: 'IMAGE',
+        },
         sections: [
           {
             widgets: [
@@ -63,9 +74,8 @@ export async function notify({
               },
               {
                 keyValue: {
-                  content: title,
-                  bottomLabel: subtitle?.replace(/(\r\n|\n|\r)/gm, ' '),
-                  iconUrl: statusIcon[status],
+                  content: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
+                  contentMultiline: true,
                 },
               },
             ],
