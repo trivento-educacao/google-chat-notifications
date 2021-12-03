@@ -6,7 +6,7 @@ async function run() {
   try {
     const title = core.getInput('title', { required: true })
     const subtitle = core.getInput('subtitle', { required: false })
-    const webhookUrl = core.getInput('url', { required: true })
+    const webhookUrl = core.getInput('webhookUrl', { required: true })
     const status = JobStatus.parse(core.getInput('status', { required: true }))
     const threadKey = core.getInput('threadKey', { required: false })
 
