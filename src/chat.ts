@@ -9,9 +9,15 @@ const statusColorPalette: { [key in Status]: string } = {
 }
 
 const statusText: { [key in Status]: string } = {
-  success: 'Succeeded',
-  cancelled: 'Cancelled',
-  failure: 'Failed',
+  success: 'SUCCEEDED',
+  cancelled: 'CANCELLED',
+  failure: 'FAILED',
+}
+
+const statusIcon: { [key in Status]: string } = {
+  success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/success.png',
+  cancelled: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/cancelled.png',
+  failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/failure.png',
 }
 
 const textButton = (text: string, url: string) => ({
@@ -47,11 +53,23 @@ export async function notify({
   const body: any = {
     cards: [
       {
-        header: {
-          title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-          subtitle: subtitle?.replace(/(\r\n|\n|\r)/gm, ' '),
-        },
         sections: [
+          {
+            widgets: [
+              {
+                textParagraph: {
+                  text: `<b><font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
+                },
+              },
+              {
+                keyValue: {
+                  content: title,
+                  bottomLabel: subtitle?.replace(/(\r\n|\n|\r)/gm, ' '),
+                  iconUrl: statusIcon[status],
+                },
+              },
+            ],
+          },
           {
             widgets: [
               {

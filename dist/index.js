@@ -2577,9 +2577,14 @@ const statusColorPalette = {
     failure: '#ff0000',
 };
 const statusText = {
-    success: 'Succeeded',
-    cancelled: 'Cancelled',
-    failure: 'Failed',
+    success: 'SUCCEEDED',
+    cancelled: 'CANCELLED',
+    failure: 'FAILED',
+};
+const statusIcon = {
+    success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/success.png',
+    cancelled: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/cancelled.png',
+    failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/failure.png',
 };
 const textButton = (text, url) => ({
     textButton: {
@@ -2601,11 +2606,23 @@ function notify({ title, subtitle, webhookUrl, status, threadKey, }) {
         const body = {
             cards: [
                 {
-                    header: {
-                        title: `<b>${title} <font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-                        subtitle: subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' '),
-                    },
                     sections: [
+                        {
+                            widgets: [
+                                {
+                                    textParagraph: {
+                                        text: `<b><font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
+                                    },
+                                },
+                                {
+                                    keyValue: {
+                                        content: title,
+                                        bottomLabel: subtitle === null || subtitle === void 0 ? void 0 : subtitle.replace(/(\r\n|\n|\r)/gm, ' '),
+                                        iconUrl: statusIcon[status],
+                                    },
+                                },
+                            ],
+                        },
                         {
                             widgets: [
                                 {
