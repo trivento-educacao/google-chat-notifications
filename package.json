@@ -1,6 +1,6 @@
 {
   "name": "google-chat-notifications",
-  "version": "2.0.1",
+  "version": "2.2.0",
   "private": true,
   "description": "Google Chat Notifications for GitHub Actions",
   "main": "dist/index.js",
