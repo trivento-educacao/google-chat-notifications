@@ -16,16 +16,13 @@ const statusText: { [key in Status]: string } = {
 
 const statusIcon: { [key in Status]: string } = {
   success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/success.png',
-  cancelled:
-    'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/cancelled.png',
+  cancelled: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/cancelled.png',
   failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/failure.png',
 }
 
 const textButton = (text: string, url: string) => ({
-  textButton: {
-    text,
-    onClick: { openLink: { url } },
-  },
+  text,
+  onClick: { openLink: { url } },
 })
 
 const htmlEntities = (str: string) => {
@@ -56,60 +53,66 @@ export async function notify({
   const spacesKey = skRegex ? skRegex[1] : undefined
 
   const body: any = {
-    cards: [
+    cardsV2: [
       {
-        header: {
-          title,
-          subtitle: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
-          imageUrl: statusIcon[status],
-          imageStyle: 'IMAGE',
+        cardId: 'google-chat-notifications',
+        card: {
+          header: {
+            title,
+            subtitle: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
+            imageUrl: statusIcon[status],
+            imageType: 'CIRCLE',
+          },
+          sections: [
+            {
+              widgets: [
+                {
+                  textParagraph: {
+                    text: `<b><font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
+                  },
+                },
+                {
+                  textParagraph: {
+                    text: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
+                  },
+                },
+              ],
+            },
+            {
+              widgets: [
+                {
+                  decoratedText: {
+                    topLabel: 'repository',
+                    text: `${owner}/${repo}`,
+                    button: textButton('OPEN REPOSITORY', repoUrl),
+                  },
+                },
+                {
+                  decoratedText: {
+                    topLabel: 'event name',
+                    text: eventName,
+                    button: textButton('OPEN EVENT', eventUrl),
+                  },
+                },
+                {
+                  decoratedText: {
+                    topLabel: 'ref',
+                    text: ref,
+                  },
+                },
+              ],
+            },
+            {
+              widgets: [
+                {
+                  buttonList: {
+                    buttons: [textButton('OPEN CHECKS', checksUrl)],
+                  },
+                },
+              ],
+            },
+          ],
         },
-        sections: [
-          {
-            widgets: [
-              {
-                textParagraph: {
-                  text: `<b><font color="${statusColorPalette[status]}">${statusText[status]}</font></b>`,
-                },
-              },
-              {
-                keyValue: {
-                  content: htmlEntities(subtitle?.replace(/(\r\n|\n|\r)/gm, ' ') ?? ''),
-                  contentMultiline: true,
-                },
-              },
-            ],
-          },
-          {
-            widgets: [
-              {
-                keyValue: {
-                  topLabel: 'repository',
-                  content: `${owner}/${repo}`,
-                  contentMultiline: true,
-                  button: textButton('OPEN REPOSITORY', repoUrl),
-                },
-              },
-              {
-                keyValue: {
-                  topLabel: 'event name',
-                  content: eventName,
-                  button: textButton('OPEN EVENT', eventUrl),
-                },
-              },
-              {
-                keyValue: { topLabel: 'ref', content: ref },
-              },
-            ],
-          },
-          {
-            widgets: [
-              {
-                buttons: [textButton('OPEN CHECKS', checksUrl)],
-              },
-            ],
-          },
-        ],
       },
     ],
   }
