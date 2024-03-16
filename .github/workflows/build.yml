@@ -3,14 +3,23 @@ on:
   pull_request:
   push:
     branches:
-    - master
-    - 'releases/*'
+      - master
+    tags:
+      - "v*"
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
+      - uses: actions/checkout@v1
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - run: yarn test
+      - name: Google Chat Notification
+        uses: nakamuraos/google-chat-notifications@v2.2.0
+        with:
+          title: Build
+          webhookUrl: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          status: ${{ job.status }}
+          threadKey: ${{ secrets.GOOGLE_CHAT_THREAD_KEY }}
+        if: always()
