@@ -123,7 +123,10 @@ export async function notify({
     }
   }
 
-  const response = await axios.default.post(webhookUrl, body)
+  const response = await axios.default.post(
+    webhookUrl + '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD',
+    body,
+  )
   if (response.status !== 200) {
     throw new Error(`Google Chat notification failed. response status=${response.status}`)
   }

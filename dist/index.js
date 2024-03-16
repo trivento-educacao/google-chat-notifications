@@ -32597,7 +32597,7 @@ function notify(_a) {
                 name: `spaces/${spacesKey}/threads/${threadKey}`,
             };
         }
-        const response = yield axios.default.post(webhookUrl, body);
+        const response = yield axios.default.post(webhookUrl + '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD', body);
         if (response.status !== 200) {
             throw new Error(`Google Chat notification failed. response status=${response.status}`);
         }
@@ -32652,7 +32652,7 @@ const GoogleChat = __importStar(__nccwpck_require__(5365));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const title = core.getInput('title', { required: true });
+            const title = core.getInput('title', { required: false }) || 'Build';
             const subtitle = core.getInput('subtitle', { required: false });
             const webhookUrl = core.getInput('webhookUrl', { required: true });
             const status = JobStatus.parse(core.getInput('status', { required: true }));
