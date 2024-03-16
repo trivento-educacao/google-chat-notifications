@@ -4,7 +4,7 @@ import * as GoogleChat from './chat'
 
 async function run() {
   try {
-    const title = core.getInput('title', { required: true })
+    const title = core.getInput('title', { required: false }) || 'Build'
     const subtitle = core.getInput('subtitle', { required: false })
     const webhookUrl = core.getInput('webhookUrl', { required: true })
     const status = JobStatus.parse(core.getInput('status', { required: true }))
