@@ -10556,6 +10556,7 @@ function run() {
             console.info('Sent message.');
         }
         catch (error) {
+            core.debug(error);
             core.setFailed(error.message);
         }
     });
