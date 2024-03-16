@@ -15,10 +15,10 @@ const statusText: { [key in Status]: string } = {
 }
 
 const statusIcon: { [key in Status]: string } = {
-  success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/success.png',
+  success: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/success.png',
   cancelled:
-    'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/cancelled.png',
-  failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/releases/v2.1.0/icons/failure.png',
+    'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/cancelled.png',
+  failure: 'https://raw.githubusercontent.com/nakamuraos/google-chat-notifications/master/icons/failure.png',
 }
 
 const textButton = (text: string, url: string) => ({
