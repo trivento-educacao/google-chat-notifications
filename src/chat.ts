@@ -124,7 +124,7 @@ export async function notify({
   }
 
   const response = await axios.default.post(
-    webhookUrl + '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD',
+    webhookUrl + body.thread ? '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD' : '',
     body,
   )
   if (response.status !== 200) {
