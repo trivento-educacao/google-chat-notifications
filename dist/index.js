@@ -32597,7 +32597,7 @@ function notify(_a) {
                 name: `spaces/${spacesKey}/threads/${threadKey}`,
             };
         }
-        const response = yield axios.default.post(webhookUrl + '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD', body);
+        const response = yield axios.default.post(webhookUrl + body.thread ? '&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD' : '', body);
         if (response.status !== 200) {
             throw new Error(`Google Chat notification failed. response status=${response.status}`);
         }
