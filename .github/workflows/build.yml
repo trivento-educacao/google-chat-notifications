@@ -16,7 +16,7 @@ jobs:
       - run: yarn build
       - run: yarn test
       - name: Google Chat Notification
-        uses: nakamuraos/google-chat-notifications@v3.3.0
+        uses: nakamuraos/google-chat-notifications@v3.4.0
         with:
           title: Build
           subtitle: ${{ github.event.head_commit.message }}
