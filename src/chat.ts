@@ -9,9 +9,9 @@ const statusColorPalette: { [key in Status]: string } = {
 }
 
 const statusText: { [key in Status]: string } = {
-  success: 'SUCCEEDED',
-  cancelled: 'CANCELLED',
-  failure: 'FAILED',
+  success: 'SUCESSO',
+  cancelled: 'CANCELADO',
+  failure: 'FALHOU',
 }
 
 const statusIcon: { [key in Status]: string } = {
@@ -43,9 +43,10 @@ export async function notify({
   threadKey?: string
 }) {
   const { owner, repo } = github.context.repo
-  const { eventName, sha, ref } = github.context
+  const { eventName, sha, ref, actor } = github.context
   const { number } = github.context.issue
   const repoUrl = `https://github.com/${owner}/${repo}`
+  const actorURL = `https://github.com/${actor}`
   const eventPath = eventName === 'pull_request' ? `/pull/${number}` : `/commit/${sha}`
   const eventUrl = `${repoUrl}${eventPath}`
   const checksUrl = `${repoUrl}${eventPath}/checks`
@@ -82,16 +83,16 @@ export async function notify({
               widgets: [
                 {
                   decoratedText: {
-                    topLabel: 'repository',
+                    topLabel: 'repositório',
                     text: `${owner}/${repo}`,
-                    button: textButton('OPEN REPOSITORY', repoUrl),
+                    button: textButton('ABRIR REPOSITÓRIO', repoUrl),
                   },
                 },
                 {
                   decoratedText: {
-                    topLabel: 'event name',
-                    text: eventName,
-                    button: textButton('OPEN EVENT', eventUrl),
+                    topLabel: 'autor',
+                    text: actor,
+                    button: textButton('PERFIL', actorURL),
                   },
                 },
                 {
@@ -106,7 +107,7 @@ export async function notify({
               widgets: [
                 {
                   buttonList: {
-                    buttons: [textButton('OPEN CHECKS', checksUrl)],
+                    buttons: [textButton('ABRIR CHECKS', checksUrl)],
                   },
                 },
               ],
@@ -128,6 +129,6 @@ export async function notify({
     body,
   )
   if (response.status !== 200) {
-    throw new Error(`Google Chat notification failed. response status=${response.status}`)
+    throw new Error(`Notificação do Google Chat falhou. status=${response.status}`)
   }
 }
