@@ -1,4 +1,4 @@
-name: 'google-chat-notifications'
+name: 'portuguese-google-chat-notifications'
 description: 'Google Chat Notifications for GitHub Actions'
 author: 'trivento-educacao'
 inputs:
