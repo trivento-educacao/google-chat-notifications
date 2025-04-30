@@ -129,6 +129,6 @@ export async function notify({
     body,
   )
   if (response.status !== 200) {
-    throw new Error(`Notificação do Google Chat falhou. status=${response.status}`)
+    throw new Error(`Notificação do Google Chat falhou. STATUS=${response.status}`)
   }
 }
